@@ -1,12 +1,20 @@
-Package: fix_rmd_submissions
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
+Package: fixrmdsubmissions
+Title: Automatically Fix Common Issues in Student R Markdown Submissions
+Version: 0.1.0
+Authors@R:
     person("Stéfan", "Janse van Rensburg", , "stefanj@mandala.ac.za", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0749-2277"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Automatically repairs common technical issues in student R Markdown
+    submissions so they can be knit reliably. Sequentially evaluates code chunks,
+    adds 'eval = FALSE' to failing chunks, and intelligently fixes bare file paths
+    to use the 'here' package. Designed for instructors who need to process hundreds
+    of submissions with minimal manual intervention.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Suggests:
+    here,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

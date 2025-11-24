@@ -1,0 +1,41 @@
+---
+title: "Example: Broken File Paths"
+author: "Student A"
+date: "2025-01-15"
+output: html_document
+---
+
+## Introduction
+
+This is a typical student submission with bare file paths that won't work
+when the instructor tries to knit it from a different location.
+
+## Load Data
+
+```{r setup}
+library(tidyverse)
+```
+
+```{r load-data}
+# Student has data in their local folder but uses bare filename
+scores <- read_csv("test_scores.csv")
+demographics <- read.csv("demographics.csv")
+```
+
+## Analysis
+
+```{r analysis}
+summary(scores)
+```
+
+## Load Model
+
+```{r}
+# Another common issue: loading saved objects
+model <- readRDS("fitted_model.rds")
+```
+
+## Note
+
+After running fix_rmd() on this file, all bare filenames will be wrapped
+with here::here("data", ...) making the paths portable and reproducible.

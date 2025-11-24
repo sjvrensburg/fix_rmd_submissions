@@ -1,0 +1,55 @@
+---
+title: "Example: Failing Code Chunks"
+author: "Student B"
+date: "2025-01-15"
+output: html_document
+---
+
+## Introduction
+
+This submission has several chunks that will fail to execute.
+
+## Successful Setup
+
+```{r setup}
+x <- 10
+y <- 20
+z <- x + y
+```
+
+## Typo in Function Name
+
+```{r}
+# Student made a typo - this will fail
+result <- maen(c(1, 2, 3, 4, 5))  # Should be 'mean'
+```
+
+## Using Previous Results
+
+```{r}
+# This chunk depends on the previous one but will still run
+# because fix_rmd() marks the failed chunk as eval=FALSE
+total <- x + y
+print(total)
+```
+
+## Undefined Variable
+
+```{r}
+# Student forgot to define this variable
+analysis <- undefined_variable * 2
+```
+
+## Working Chunk
+
+```{r}
+# This will work fine
+summary(1:100)
+```
+
+## Note
+
+After running fix_rmd() on this file, chunks with errors will have
+'eval = FALSE' added to their headers, but working chunks remain unchanged.
+The file will knit successfully with the working chunks executed and
+error chunks displayed but not run.

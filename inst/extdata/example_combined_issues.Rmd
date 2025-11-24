@@ -1,0 +1,57 @@
+---
+title: "Example: Combined Issues"
+author: "Student C"
+date: "2025-01-15"
+output: html_document
+---
+
+## Real-World Scenario
+
+This file combines multiple common issues that instructors encounter.
+
+```{r setup, message=FALSE}
+library(tidyverse)
+library(here)
+```
+
+## Issue 1: Bare file path
+
+```{r}
+# Will be fixed to use here::here()
+data <- read_csv("student_data.csv")
+```
+
+## Issue 2: Failed chunk with bare path
+
+```{r}
+# Both the path AND the error will be fixed
+# The path gets wrapped, and eval=FALSE is added
+results <- read_csv("missing_file.csv")
+model <- lm(nonexistent ~ formula, data = results)
+```
+
+## Issue 3: Successful analysis
+
+```{r}
+# This works and will be preserved
+summary_stats <- data.frame(
+  mean = mean(1:10),
+  sd = sd(1:10)
+)
+print(summary_stats)
+```
+
+## Issue 4: Another path that works but needs fixing
+
+```{r}
+# File exists but path needs to be portable
+config <- readRDS("config.rds")
+```
+
+## Note
+
+The fix_rmd() function handles all these issues in one pass:
+- Wraps bare paths with here::here()
+- Adds eval=FALSE only to chunks that actually fail
+- Preserves working code and student formatting
+- Creates backup before any modifications
