@@ -3,3 +3,8 @@
 export(fix_folder)
 export(fix_rmd)
 export(knit_fixed_files)
+export(run_demo)
+import(here)
+import(pander)
+import(rmarkdown)
+importFrom(utils,write.csv)
