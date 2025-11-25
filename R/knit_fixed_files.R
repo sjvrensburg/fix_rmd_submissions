@@ -193,14 +193,20 @@ knit_fixed_files <- function(path = ".",
   cat("Total files processed: ", length(files), "\n")
   cat("Successfully knitted: ", success_count, " (",
       round(success_count / length(files) * 100, 1), "%)\n", sep = "")
-  cat("Errors: ", error_count, "\n")
+  cat("Failed to knit: ", error_count, "\n")
 
   if (error_count > 0) {
-    cat("\nFiles with errors:\n")
-    failed_files <- results$file[!results$success]
-    for (f in failed_files) {
-      cat("  - ", basename(dirname(f)), "/", basename(f), "\n", sep = "")
+    cat("\nKnitting Failures (rendering errors - ggplot2, LaTeX, etc.):\n")
+    failed_rows <- results[!results$success, ]
+    for (i in seq_len(nrow(failed_rows))) {
+      student_name <- basename(dirname(failed_rows$file[i]))
+      error_msg <- substr(failed_rows$error[i], 1, 80)
+      cat("  - ", student_name, "\n", sep = "")
+      cat("    Error: ", error_msg, "\n", sep = "")
     }
+    cat("\nNote: These are RENDERING errors that occur during knitting.\n")
+    cat("      Check the _FIXED.Rmd files - chunks with evaluation errors\n")
+    cat("      are already disabled with [fixrmdsubmissions] comments.\n")
   }
 
   if (!is.null(output_dir) && success_count > 0) {

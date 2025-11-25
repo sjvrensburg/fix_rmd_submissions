@@ -174,7 +174,21 @@ fix_and_knit_folder <- function(path = ".",
       cat("\nFinal Results:\n")
       cat("  Successfully knitted: ", success_count, " (",
           round(success_count / nrow(knit_results) * 100, 1), "%)\n", sep = "")
-      cat("  Errors: ", error_count, "\n")
+      cat("  Failed to knit: ", error_count, "\n")
+
+      if (error_count > 0) {
+        cat("\nKnitting Failures (rendering errors - ggplot2, LaTeX, etc.):\n")
+        failed_files <- knit_results[!knit_results$success, ]
+        for (i in seq_len(nrow(failed_files))) {
+          student_name <- basename(dirname(failed_files$file[i]))
+          error_msg <- substr(failed_files$error[i], 1, 80)
+          cat("  - ", student_name, "\n", sep = "")
+          cat("    Error: ", error_msg, "\n", sep = "")
+        }
+        cat("\nNote: Files were successfully FIXED (evaluation errors caught),\n")
+        cat("      but failed during KNITTING (rendering/graphics errors).\n")
+        cat("      Check _FIXED.Rmd files for disabled chunks with [fixrmdsubmissions] comments.\n")
+      }
 
       if (!is.null(output_dir) && success_count > 0) {
         cat("\nAll outputs saved to: ", normalizePath(output_dir), "\n", sep = "")
