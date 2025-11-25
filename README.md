@@ -53,15 +53,48 @@ Students wrote code like:
 data <- read_csv("student_data.csv")  # Won't work - wrong directory!
 ```
 
-### Complete Workflow (6 Steps)
+### Complete Workflow
 
-#### Step 1: Open R in your submissions folder
+#### The Simplified Way (Recommended)
+
+Use the new `fix_and_knit_folder()` function to do everything in one call:
+
+```r
+setwd("~/Downloads/STAT312-Test1-Submissions/")
+
+library(fixrmdsubmissions)
+
+# Create .here file to mark project root
+writeLines("here root", ".here")
+
+# Fix and knit all submissions in one step
+results <- fix_and_knit_folder(
+  path = ".",               # Current folder
+  recursive = TRUE,         # Search subdirectories
+  fix_paths = TRUE,         # Convert to here::here()
+  data_folder = ".",        # Data files are at parent level
+  add_student_info = TRUE,  # Add folder name as heading
+  output_dir = "graded_submissions"  # Collect all outputs in one folder
+)
+
+# View results
+View(results$fix_results)     # See which files were fixed and how many chunks disabled
+View(results$knit_results)    # See which files succeeded/failed in knitting
+```
+
+**That's it!** All fixed and knitted files are now in `graded_submissions/` folder.
+
+#### The Traditional Way (Step-by-step)
+
+If you prefer more control or need to re-knit already-fixed files:
+
+##### Step 1: Open R in your submissions folder
 
 ```r
 setwd("~/Downloads/STAT312-Test1-Submissions/")
 ```
 
-#### Step 2: Mark this as your project root
+##### Step 2: Mark this as your project root
 
 This tells the `here` package where to find data files:
 
@@ -69,7 +102,7 @@ This tells the `here` package where to find data files:
 writeLines("here root", ".here")
 ```
 
-#### Step 3: Load the package and fix all submissions
+##### Step 3: Load the package and fix all submissions
 
 ```r
 library(fixrmdsubmissions)
@@ -84,7 +117,7 @@ fix_folder(
 )
 ```
 
-#### Step 4: Knit all fixed submissions
+##### Step 4: Knit all fixed submissions
 
 The package respects each file's YAML output format (including custom templates):
 
@@ -93,16 +126,12 @@ The package respects each file's YAML output format (including custom templates)
 results <- knit_fixed_files(
   path = ".",
   recursive = TRUE,
-  quiet = FALSE
+  quiet = FALSE,
+  output_dir = "graded_submissions"  # Collect all outputs in one folder
 )
 
 # View results summary
 View(results)  # See which files succeeded/failed
-```
-
-**Optional:** Collect all outputs in one folder:
-```r
-knit_fixed_files(".", output_dir = "graded_submissions")
 ```
 
 #### Step 5: Review the output
@@ -420,6 +449,61 @@ Use `data_folder = "data"`:
 
 ```r
 fix_folder(".", data_folder = "data")
+```
+
+### Consolidated Output Workflow
+
+When grading, you often want all final output files collected in one folder for easier distribution. Use `output_dir` with `fix_and_knit_folder()`:
+
+**Scenario:** You have student folders scattered across your submissions directory, and you want all final HTML/PDF files in one location.
+
+```
+Submissions/
+├── Student_A/
+│   └── analysis.Rmd → analysis.html (after processing)
+├── Student_B/
+│   └── analysis.Rmd → analysis.html (after processing)
+├── Group1/
+│   └── report.Rmd → report.html (after processing)
+└── Group2/
+    └── report.Rmd → report.html (after processing)
+```
+
+**Solution:** Collect all outputs in one folder with automatic naming to prevent conflicts:
+
+```r
+# Process all submissions and collect outputs in one folder
+results <- fix_and_knit_folder(
+  path = ".",
+  output_dir = "graded_final",
+  recursive = TRUE
+)
+
+# graded_final/ now contains:
+# ├── Student_A_analysis.html
+# ├── Student_B_analysis.html
+# ├── Group1_report.html
+# └── Group2_report.html
+```
+
+**Key features:**
+- Parent folder names are prepended to avoid filename conflicts (e.g., `Student_A_analysis.html`)
+- Works with files at any directory depth (recursive search)
+- Perfect for uploading all results back to your LMS
+- Returns detailed results showing success/failure for each file
+
+**Two-step alternative** (for more control):
+
+```r
+# Step 1: Fix all files
+fix_folder(".", recursive = TRUE)
+
+# Step 2: Knit and consolidate outputs
+results <- knit_fixed_files(
+  path = ".",
+  output_dir = "graded_final",
+  recursive = TRUE
+)
 ```
 
 ## How Path Fixing Works
